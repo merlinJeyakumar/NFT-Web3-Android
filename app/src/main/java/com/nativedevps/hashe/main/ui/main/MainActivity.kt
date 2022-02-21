@@ -8,9 +8,12 @@ import com.nativedevps.hashe.R
 import com.nativedevps.hashe.databinding.ActivityMainsBinding
 import com.nativedevps.hashe.main.ui.splash.SplashActivity
 import com.nativedevps.support.base_class.ActionBarActivity
+import com.nativedevps.support.inline.orElse
+import com.nativedevps.support.utility.view.DialogBox.listDialog
 import com.nativedevps.support.utility.view.ViewUtils.gone
 import com.nativedevps.support.utility.view.ViewUtils.visible
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
@@ -57,6 +60,32 @@ class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
         }
         childBinding.mainInclude.createWalletMaterialButton.setOnClickListener {
             viewModel.createWallet()
+        }
+        childBinding.mainInclude.addressMaterialButton.setOnClickListener {
+            val walletFiles: List<Pair<Int, String>> =
+                viewModel.getWalletDirectory().listFiles().map {
+                    Pair(R.drawable.ic_baseline_account_balance_wallet_24, it.name)
+                }
+
+            listDialog(
+                title = "Select Wallet",
+                stringList = walletFiles,
+                callback = { success, selection ->
+                    selection?.let {
+                        val selectedFile = File(viewModel.getWalletDirectory(), it.second.second)
+                        if (selectedFile.exists()) {
+                            viewModel.getWalletAddress("password", selectedFile)?.let {
+                                viewModel.overrideConsole(it)
+                            }
+
+                        } else {
+                            viewModel.overrideConsole(
+                                "Could not find selected file " +
+                                        selectedFile.absolutePath
+                            )
+                        }
+                    }
+                })
         }
     }
 
