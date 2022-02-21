@@ -3,13 +3,14 @@ package com.nativedevps.hashe.main.ui.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.asLiveData
+import android.text.method.ScrollingMovementMethod
 import com.nativedevps.hashe.R
 import com.nativedevps.hashe.databinding.ActivityMainsBinding
 import com.nativedevps.hashe.main.ui.splash.SplashActivity
 import com.nativedevps.support.base_class.ActionBarActivity
+import com.nativedevps.support.utility.view.ViewUtils.gone
+import com.nativedevps.support.utility.view.ViewUtils.visible
 import dagger.hilt.android.AndroidEntryPoint
-import org.jetbrains.anko.toast
 
 @AndroidEntryPoint
 class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
@@ -25,19 +26,16 @@ class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
     }
 
     private fun initData() {
-        viewModel.userProfile.asLiveData().observe(this, { userProfile ->
-            /*if (userProfile.emailId.isNullOrEmpty()) { //todo: optional
-                initFreshLogin()
-                return@observe
-            }*/
-            childBinding.userProfile = userProfile
-        })
-
-        viewModel.retrieveUserProfile { success, model, error ->
-            if (success) {
-                toast("Profile updated!")
+        viewModel.consoleLiveData.observe(this) {
+            childBinding.consoleAppCompatTextView.append("\n$it")
+        }
+        viewModel.connectionLiveData.observe(this) {
+            if (it) {
+                childBinding.mainInclude.parentLinearLayoutCompat.visible()
+                childBinding.connectButton.gone()
             } else {
-                toast("failed: $error")
+                childBinding.mainInclude.parentLinearLayoutCompat.gone()
+                childBinding.connectButton.visible()
             }
         }
     }
@@ -49,9 +47,17 @@ class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
     }
 
     private fun initListener() {
+        childBinding.connectButton.setOnClickListener {
+            viewModel.connectWallet()
+        }
     }
 
     private fun initPreview() {
+        childBinding.consoleAppCompatTextView.setMovementMethod(ScrollingMovementMethod())
+
+
+        viewModel.overrideConsole("Connection not made")
+        childBinding.mainInclude.parentLinearLayoutCompat.gone()
     }
 
     override fun getLocale(context: Context): String? {

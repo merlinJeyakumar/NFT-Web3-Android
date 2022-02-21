@@ -3,36 +3,73 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="userProfile"
-            type="com.domain.model.configuration.UserProfile" />
-    </data>
-
     <ScrollView
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/main_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="@dimen/_2sdp"
-                android:text="@{`Welcome! `+userProfile.firstName+` `+userProfile.lastName}"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <ScrollView
+                android:animateLayoutChanges="true"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:fillViewport="true"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayoutCompat"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Welcome! xyz abc" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/consoleAppCompatTextView"
+                    style="@style/main_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="start"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:gravity="bottom|start"
+                    tools:text="Welcome! xyz abc" />
+            </ScrollView>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:animateLayoutChanges="true"
+                android:id="@+id/linearLayoutCompat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/connectButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Connect Etherium Network" />
+
+                <include
+                    android:id="@+id/mainInclude"
+                    layout="@layout/layout_main_input" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <data>
+
+        <variable
+            name="userProfile"
+            type="com.domain.model.configuration.UserProfile" />
+
+        <variable
+            name="viewmodel"
+            type="com.nativedevps.hashe.main.ui.main.MainViewModel" />
+    </data>
 </layout>

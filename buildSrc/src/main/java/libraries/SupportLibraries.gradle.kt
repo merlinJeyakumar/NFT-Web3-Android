@@ -162,5 +162,5 @@ object ThirdPartyLibraries {
 }
 
 object Web3Libraries{
-    const val web3 = "org.web3j:core-android:2.2.1"
+    const val web3 = "org.web3j:core:4.8.7-android"
 }
