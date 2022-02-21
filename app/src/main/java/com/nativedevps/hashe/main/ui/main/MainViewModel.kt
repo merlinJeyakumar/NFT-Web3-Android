@@ -12,8 +12,12 @@ import com.nativedevps.hashe.BuildConfig
 import com.nativedevps.support.base_class.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
+import java.io.File
+import java.security.Security
 import javax.inject.Inject
 
 @HiltViewModel
@@ -68,7 +72,16 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
         }
     }
 
-    fun connectWallet() {
+    fun initWeb3J(){ //todo: handle at handler class
+        val provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)
+        if (provider == null || provider.javaClass == BouncyCastleProvider::class.java) {
+            return
+        }
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        Security.insertProviderAt(BouncyCastleProvider(), 1)
+    }
+
+    fun connectWallet() { //todo: abstract to handler
         overrideConsole("Connecting..")
         showProgressDialog("Connecting..")
         runOnNewThread {
@@ -81,10 +94,32 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
                     overrideConsole(clientVersion.error.message)
                 }
                 runOnUiThread { connectionLiveData.value = !clientVersion.hasError() }
-                hideProgressDialog()
             } catch (e: Exception) {
                 overrideConsole(e.localizedMessage)
+            } finally {
+                hideProgressDialog()
             }
+        }
+    }
+
+    fun createWallet() {
+        showProgressDialog("Creating..")
+        try {
+            val walletFile = WalletUtils.generateLightNewWalletFile(
+                "password",
+                getWalletDirectory()
+            )
+            overrideConsole("Wallet created on: $walletFile")
+        } catch (e: Exception) {
+            overrideConsole(e.localizedMessage)
+        } finally {
+            hideProgressDialog()
+        }
+    }
+
+    fun getWalletDirectory(): File { //todo: move to utils
+        return File("${context.filesDir}", "crypto").apply {
+            mkdirs()
         }
     }
 

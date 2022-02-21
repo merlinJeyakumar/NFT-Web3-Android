@@ -20,9 +20,14 @@ class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
 
     override fun onInit(savedInstanceState: Bundle?) {
         super.onInit(savedInstanceState)
+        initInstance()
         initData()
         initListener()
         initPreview()
+    }
+
+    private fun initInstance() {
+        viewModel.initWeb3J()
     }
 
     private fun initData() {
@@ -49,6 +54,9 @@ class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
     private fun initListener() {
         childBinding.connectButton.setOnClickListener {
             viewModel.connectWallet()
+        }
+        childBinding.mainInclude.createWalletMaterialButton.setOnClickListener {
+            viewModel.createWallet()
         }
     }
 
