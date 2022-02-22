@@ -90,7 +90,9 @@ class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
     }
 
     private fun initPreview() {
-        childBinding.consoleAppCompatTextView.setMovementMethod(ScrollingMovementMethod())
+        childBinding.consoleAppCompatTextView.setTextIsSelectable(true);
+        childBinding.consoleAppCompatTextView.setFocusable(true);
+        childBinding.consoleAppCompatTextView.setFocusableInTouchMode(true);
 
 
         viewModel.overrideConsole("Connection not made")
