@@ -10,20 +10,23 @@ import com.domain.model.configuration.UserProfile
 import com.domain.model.update_profile.UpdateSendModel
 import com.nativedevps.hashe.BuildConfig
 import com.nativedevps.support.base_class.BaseViewModel
+import com.nativedevps.support.inline.orElse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import java.io.File
 import java.security.Security
 import javax.inject.Inject
-import kotlin.jvm.Throws
 
 @HiltViewModel
 class MainViewModel @Inject constructor(application: Application) : BaseViewModel(application) {
+
+    private var web3j: Web3j? = null
 
     @Inject
     lateinit var restDataSource: RestDataSource
@@ -87,9 +90,9 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
         overrideConsole("Connecting..")
         showProgressDialog("Connecting..")
         runOnNewThread {
-            val web3 = Web3j.build(HttpService(BuildConfig.EndPoint))
+            web3j = Web3j.build(HttpService(BuildConfig.EndPoint))
             try {
-                val clientVersion = web3.web3ClientVersion().send()
+                val clientVersion = web3j!!.web3ClientVersion().send()
                 if (!clientVersion.hasError()) {
                     overrideConsole("Connected!")
                 } else {
@@ -121,17 +124,45 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
         }
     }
 
-    fun getWalletAddress(password:String, walletFile: File): String {
-        return try {
-            getWalletCredential(password,walletFile).address
+    fun getWalletAddress(password: String, walletFile: File): String? {
+        try {
+            return getWalletCredential(password, walletFile).address
         } catch (e: Exception) {
-            e.message!!
+            overrideConsole(e.message!!)
+        }
+        return null
+    }
+
+    fun getWalletBalance(password: String, walletFile: File,callback: (result: String) -> Unit) {
+        getWalletAddress(password,walletFile)?.let {
+            getWalletBalance(it, callback)
+        }
+    }
+
+    fun getWalletBalance(address: String, callback: (result: String) -> Unit) {
+        web3j?.let {
+            showProgressDialog("Collecting..")
+            runOnNewThread {
+                try {
+                    it.ethGetBalance(address, DefaultBlockParameterName.LATEST).send().let {
+                        runOnUiThread {
+                            callback.invoke(it.balance.toString())
+                        }
+                    }
+                } catch (e: Exception) {
+                    overrideConsole(e.message!!)
+                } finally {
+                    hideProgressDialog()
+                }
+            }
+        }.orElse {
+            overrideConsole("Web3j could be initialized")
         }
     }
 
     @Throws
     private fun getWalletCredential(password: String, walletFile: File): Credentials {
-        return WalletUtils.loadCredentials("password",walletFile)
+        return WalletUtils.loadCredentials(password, walletFile)
     }
 
     fun getWalletDirectory(): File { //todo: move to utils

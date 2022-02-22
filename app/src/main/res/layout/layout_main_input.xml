@@ -20,6 +20,12 @@
         android:text="Wallet Address" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/balanceMaterialButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wallet Balance" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/sendTransactionMaterialButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
