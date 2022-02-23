@@ -19,7 +19,10 @@ import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
+import org.web3j.tx.Transfer
+import org.web3j.utils.Convert
 import java.io.File
+import java.math.BigDecimal
 import java.security.Security
 import javax.inject.Inject
 
@@ -100,7 +103,9 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
                 }
                 runOnUiThread { connectionLiveData.value = !clientVersion.hasError() }
             } catch (e: Exception) {
-                overrideConsole(e.localizedMessage)
+                e?.let {
+                    overrideConsole(e.message!!)
+                }
             } finally {
                 hideProgressDialog()
             }
@@ -168,6 +173,30 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
     fun getWalletDirectory(): File { //todo: move to utils
         return File("${context.filesDir}", "crypto").apply {
             mkdirs()
+        }
+    }
+
+    fun sendPayment(
+        paymentAmount:BigDecimal,
+        payee: File,
+        payeePassword:String,
+        claimantAddress: String
+    ) {
+        showProgressDialog(message = "Verifying..")
+        runOnNewThread {
+            try {
+                val credentials = getWalletCredential(payeePassword, payee)
+                showProgressDialog(message = "Sending..")
+                val receipt = Transfer.sendFunds(
+                    web3j, credentials, claimantAddress, paymentAmount,
+                    Convert.Unit.ETHER
+                ).send()
+                overrideConsole("Transaction completed ${receipt.transactionHash}")
+            } catch (e: Exception) {
+                overrideConsole(e.message!!)
+            }finally {
+                hideProgressDialog()
+            }
         }
     }
 
