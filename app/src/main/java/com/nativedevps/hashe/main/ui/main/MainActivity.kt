@@ -17,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.jetbrains.anko.toast
 import java.io.File
 import java.math.BigDecimal
-import java.math.BigInteger
 
 @AndroidEntryPoint
 class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
@@ -88,9 +87,9 @@ class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
                                 if (positive) {
                                     it.editText?.text.toString().toBigDecimalOrNull()
                                         ?.let { it: BigDecimal ->
-                                            if (it.toInt() < 0){
+                                            if (it.toInt() < 0) {
                                                 textInputLayout.error = "value cannot be negative"
-                                            }else{
+                                            } else {
                                                 alertDialog?.dismiss()
                                                 viewModel.sendPayment(
                                                     it,
@@ -110,6 +109,58 @@ class MainActivity : ActionBarActivity<ActivityMainsBinding, MainViewModel>(
                 toast("Select wallet to receive payment")
             }
             toast("Select wallet to make pay")
+        }
+        childBinding.mainInclude.privateKeyMaterialButton.setOnClickListener {
+            selectWallet { selectionAddress, selectedFile ->
+                viewModel.getWalletPrivateKey("password", selectedFile)
+            }
+        }
+        childBinding.mainInclude.importWalletMnemonicMaterialButton.setOnClickListener {
+            inputDialog(
+                message = "enter mnemonic",
+                dismissOnPositive = false
+            ) { alertDialog,
+                positive,
+                textInputLayout ->
+                if (positive) {
+                    textInputLayout?.editText?.text?.toString()?.let { mnemonic: String ->
+                        if (mnemonic.count { it == ' ' } in 10..24) {
+                            inputDialog("enter password") { alertDialog,
+                                                            positive,
+                                                            textInputLayout ->
+                                if (positive) {
+                                    val password = textInputLayout?.editText?.text?.toString()
+                                    if (password?.isEmpty()!!) {
+                                        textInputLayout.error = "password required"
+                                    } else {
+                                        viewModel.importAccount(mnemonic, password)
+                                        alertDialog?.dismiss()
+                                    }
+                                }
+                            }
+                            alertDialog?.dismiss()
+                        } else {
+                            textInputLayout.error = "mnemonic could be valid"
+                        }
+                    }
+                }
+            }
+        }
+        childBinding.mainInclude.importWalletPrivateKeyMaterialButton.setOnClickListener {
+            inputDialog(
+                "enter private key",
+                dismissOnPositive = false
+            ) { alertDialog, positive,
+                textInputLayout ->
+                textInputLayout?.editText?.text?.toString()?.let { privateKey: String ->
+                    if (privateKey.length in 2..256) {
+                        viewModel.importAccount(privateKey)
+                        alertDialog?.dismiss()
+                    } else {
+                        textInputLayout.error = "invalid private key"
+                    }
+                }
+            }
         }
     }
 

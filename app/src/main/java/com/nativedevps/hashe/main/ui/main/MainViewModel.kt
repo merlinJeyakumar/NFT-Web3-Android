@@ -138,8 +138,19 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
         return null
     }
 
-    fun getWalletBalance(password: String, walletFile: File,callback: (result: String) -> Unit) {
-        getWalletAddress(password,walletFile)?.let {
+    fun getWalletPrivateKey(password: String, walletFile: File): String? {
+        return try {
+            getWalletCredential(password, walletFile).ecKeyPair.privateKey.toString(16).apply {
+                overrideConsole(this)
+            }
+        } catch (e: Exception) {
+            overrideConsole(e.message!!)
+            return null
+        }
+    }
+
+    fun getWalletBalance(password: String, walletFile: File, callback: (result: String) -> Unit) {
+        getWalletAddress(password, walletFile)?.let {
             getWalletBalance(it, callback)
         }
     }
@@ -177,9 +188,9 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
     }
 
     fun sendPayment(
-        paymentAmount:BigDecimal,
+        paymentAmount: BigDecimal,
         payee: File,
-        payeePassword:String,
+        payeePassword: String,
         claimantAddress: String
     ) {
         showProgressDialog(message = "Verifying..")
@@ -194,9 +205,43 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
                 overrideConsole("Transaction completed ${receipt.transactionHash}")
             } catch (e: Exception) {
                 overrideConsole(e.message!!)
-            }finally {
+            } finally {
                 hideProgressDialog()
             }
+        }
+    }
+
+    fun importAccount(
+        mnemonic: String,
+        password: String
+    ) {
+        showProgressDialog(message = "Importing..")
+        runOnNewThread {
+            showProgressDialog(message = "validating..")
+            try {
+                val credentials = WalletUtils.loadBip39Credentials(password, mnemonic)
+                getWalletBalance(credentials.address) { result: String ->
+                    overrideConsole("Added & Balance: $result")
+                }
+            } catch (e: Exception) {
+                overrideConsole(e.message!!)
+            } finally {
+                hideProgressDialog()
+            }
+        }
+    }
+
+    fun importAccount(privateKey: String) {
+        showProgressDialog("Importing..")
+        try {
+            val credentials = Credentials.create(privateKey)
+            getWalletBalance(credentials.address) { result: String ->
+                overrideConsole("Added & Balance: $result")
+            }
+        } catch (e: Exception) {
+            overrideConsole(e.message!!)
+        } finally {
+            hideProgressDialog()
         }
     }
 

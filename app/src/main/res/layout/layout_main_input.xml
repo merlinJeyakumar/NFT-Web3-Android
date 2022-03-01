@@ -14,10 +14,28 @@
         android:text="Create Wallet" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/importWalletMnemonicMaterialButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Import Wallet / Mnemonic" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/importWalletPrivateKeyMaterialButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Import Wallet / PrivateKey" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/addressMaterialButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Wallet Address" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/privateKeyMaterialButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wallet Private Key" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/balanceMaterialButton"
