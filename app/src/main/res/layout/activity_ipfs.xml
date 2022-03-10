@@ -46,6 +46,12 @@
                     android:layout_height="wrap_content"
                     android:text="Authentication" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/pinFileButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pin File to IPFS" />
+
                 <include
                     android:id="@+id/mainInclude"
                     layout="@layout/layout_ipfs_input" />

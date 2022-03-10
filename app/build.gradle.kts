@@ -18,7 +18,11 @@ android {
         setTargetSdkVersion((property("targetSdkVersion")).toString())
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
-        buildConfigField("String", "EndPoint", "\"https://rinkeby.infura.io/v3/21057df944374f5f93c9b349116b561f\"")
+        buildConfigField(
+            "String",
+            "EndPoint",
+            "\"https://rinkeby.infura.io/v3/21057df944374f5f93c9b349116b561f\""
+        )
         buildConfigField("String", "ProjectSecret", "\"f4831f4d242247f48fa842e880eb0b93\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -93,6 +97,7 @@ dependencies {
     firebaseLibraries()
     thirdPartyLibraries()
     web3Libraries()
+    implementation("io.github.zinebfadili:pinata-java-sdk:2.1.0")
     testLibraries()
     testImplementation(kotlin("test"))
 }

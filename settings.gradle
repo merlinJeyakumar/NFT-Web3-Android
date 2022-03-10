@@ -3,6 +3,3 @@ include ':app', ':support', ':data', ':domain'
 project(':support').projectDir = new File(rootDir, 'modules/jeyksupport')
 project(':data').projectDir = new File(rootDir, 'data')
 project(':domain').projectDir = new File(rootDir, 'domain')
-
-include ':pinata-java-sdk'
-project(':pinata-java-sdk').projectDir = new File(rootDir, 'modules/pinata-java-sdk')
