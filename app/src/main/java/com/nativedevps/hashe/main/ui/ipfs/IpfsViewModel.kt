@@ -1,4 +1,4 @@
-package com.nativedevps.hashe.main.ui.main
+package com.nativedevps.hashe.main.ui.ipfs
 
 
 import android.app.Application
@@ -27,7 +27,7 @@ import java.security.Security
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(application: Application) : BaseViewModel(application) {
+class IpfsViewModel @Inject constructor(application: Application) : BaseViewModel(application) {
     val consoleLiveData = MutableLiveData<String>()
 
     override fun onCreate() {
@@ -41,4 +41,10 @@ class MainViewModel @Inject constructor(application: Application) : BaseViewMode
             consoleLiveData.value = "$currentIndex> $message"
         }
     }
+
+    fun authenticate() {
+        //todo: authenticate sinata
+    }
+
+
 }

@@ -1,21 +1,19 @@
-package com.nativedevps.hashe.main.ui.main
+package com.nativedevps.hashe.main.ui.ipfs
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.nativedevps.hashe.R
-import com.nativedevps.hashe.databinding.ActivityMainBinding
-import com.nativedevps.hashe.main.ui.dapp.DappActivity
-import com.nativedevps.hashe.main.ui.ipfs.IpfsActivity
+import com.nativedevps.hashe.databinding.ActivityIpfsBinding
 import com.nativedevps.hashe.main.ui.splash.SplashActivity
 import com.nativedevps.support.base_class.ActionBarActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ActionBarActivity<ActivityMainBinding, MainViewModel>(
-    R.layout.activity_main,
-    MainViewModel::class.java
+class IpfsActivity : ActionBarActivity<ActivityIpfsBinding, IpfsViewModel>(
+    R.layout.activity_ipfs,
+    IpfsViewModel::class.java
 ) {
 
     private var alertDialog: AlertDialog? = null
@@ -45,11 +43,8 @@ class MainActivity : ActionBarActivity<ActivityMainBinding, MainViewModel>(
     }
 
     private fun initListener() {
-        childBinding.ipfsMaterialButton.setOnClickListener {
-            startActivity(Intent(this, IpfsActivity::class.java))
-        }
-        childBinding.dAppMaterialButton.setOnClickListener {
-            startActivity(Intent(this, DappActivity::class.java))
+        childBinding.authenticationButton.setOnClickListener {
+            viewModel.authenticate()
         }
     }
 

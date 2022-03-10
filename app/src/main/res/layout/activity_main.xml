@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/consoleAppCompatTextView"
@@ -31,24 +31,26 @@
                 tools:text="Welcome! xyz abc" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:animateLayoutChanges="true"
                 android:id="@+id/linearLayoutCompat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
                 android:gravity="center"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/connectButton"
+                    android:id="@+id/dAppMaterialButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Connect Etherium Network" />
+                    android:text="DApp - Wallet" />
 
-                <include
-                    android:id="@+id/mainInclude"
-                    layout="@layout/layout_main_input" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ipfsMaterialButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DApp - IPFS" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -58,12 +60,5 @@
 
     <data>
 
-        <variable
-            name="userProfile"
-            type="com.domain.model.configuration.UserProfile" />
-
-        <variable
-            name="viewmodel"
-            type="com.nativedevps.hashe.main.ui.main.MainViewModel" />
     </data>
 </layout>
