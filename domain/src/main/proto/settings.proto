@@ -13,3 +13,11 @@ message UserProfile {
 message AppConfiguration {
   string option1 = 1;
 }
+
+message nft {
+ string hash = 1;
+}
+
+message NftList {
+ repeated nft nfts = 1;
+}

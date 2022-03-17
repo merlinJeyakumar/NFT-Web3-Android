@@ -13,4 +13,8 @@ interface SettingsConfigurationSource {
 
     fun getAppConfiguration(): Flow<AppConfiguration>
     suspend fun setAppConfiguration(appConfiguration: AppConfiguration)
+
+    suspend fun addNft(nft: nft)
+    suspend fun removeNft(nft: nft)
+    suspend fun getAllNft():Flow<NftList>
 }

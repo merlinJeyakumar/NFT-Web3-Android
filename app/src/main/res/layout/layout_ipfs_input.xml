@@ -8,9 +8,28 @@
     android:orientation="vertical">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/uploadMaterialButton"
+        android:id="@+id/pinFileButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload" />
+        android:text="Upload to IPFS" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/showHashMaterialButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show hash"
+        android:visibility="visible" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pinMaterialButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pin Hash" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/unpinMaterialButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unpin Hash" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

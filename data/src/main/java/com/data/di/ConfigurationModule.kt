@@ -8,6 +8,7 @@ import com.data.repositories.local.configuration.PreferencesRepository
 import com.domain.datasources.local.IPreferencesDataSource
 import com.domain.datasources.local.SettingsConfigurationSource
 import com.domain.model.configuration.AppConfiguration
+import com.domain.model.configuration.NftList
 import com.domain.model.configuration.UserProfile
 import dagger.Module
 import dagger.Provides
@@ -24,9 +25,13 @@ object ConfigurationModule {
     fun provideSettingsConfigurationRepository(
         userPreferenceDataStore: DataStore<UserProfile>,
         appConfiguration: DataStore<AppConfiguration>,
+        nftListDataStore: DataStore<NftList>
     ): SettingsConfigurationSource {
-        return DataStoreRepository(userPreferenceDataStore,
-            appConfiguration)
+        return DataStoreRepository(
+            userPreferenceDataStore,
+            appConfiguration,
+            nftListDataStore
+        )
     }
 
     @Provides
@@ -37,6 +42,11 @@ object ConfigurationModule {
     @Provides
     fun provideConfiguration(dataStoreManager: DataStoreManager): DataStore<AppConfiguration> {
         return dataStoreManager.getDeviceConfiguration()
+    }
+
+    @Provides
+    fun provideNftList(dataStoreManager: DataStoreManager): DataStore<NftList> {
+        return dataStoreManager.getNftListSerializer()
     }
 
     @Provides

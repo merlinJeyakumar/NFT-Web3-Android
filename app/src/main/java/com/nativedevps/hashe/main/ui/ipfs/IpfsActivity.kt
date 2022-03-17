@@ -13,6 +13,9 @@ import com.nativedevps.hashe.databinding.ActivityIpfsBinding
 import com.nativedevps.hashe.main.ui.splash.SplashActivity
 import com.nativedevps.support.base_class.ActionBarActivity
 import com.nativedevps.support.utility.debugging.JLogE
+import com.nativedevps.support.utility.view.DialogBox.confirmationDialog
+import com.nativedevps.support.utility.view.DialogBox.inputDialog
+import com.nativedevps.support.utility.view.DialogBox.listDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -52,8 +55,36 @@ class IpfsActivity : ActionBarActivity<ActivityIpfsBinding, IpfsViewModel>(
         childBinding.authenticationButton.setOnClickListener {
             viewModel.testAuthenticate()
         }
-        childBinding.pinFileButton.setOnClickListener {
+        childBinding.mainInclude.pinFileButton.setOnClickListener {
             pickAFile()
+        }
+        childBinding.mainInclude.pinMaterialButton.setOnClickListener {
+            getHashInput { hash ->
+                confirmationDialog(callback = { success: Boolean ->
+                    if (success) {
+                        viewModel.pinHash(hash)
+                    }
+                })
+            }
+        }
+        childBinding.mainInclude.unpinMaterialButton.setOnClickListener {
+            getHashInput { hash ->
+                confirmationDialog(callback = { success: Boolean ->
+                    if (success) {
+                        viewModel.unpinHash(hash)
+                    }
+                })
+            }
+        }
+        childBinding.mainInclude.showHashMaterialButton.setOnClickListener {
+            viewModel.getNftList {
+                alertDialog =
+                    listDialog(stringList = it.map { it.hash }, callback = { isSuccess, pair ->
+                        if (isSuccess) {
+                            viewModel.overrideConsole("Selected: ${pair?.second}")
+                        }
+                    })
+            }
         }
     }
 
@@ -90,6 +121,23 @@ class IpfsActivity : ActionBarActivity<ActivityIpfsBinding, IpfsViewModel>(
     }
 
     private fun initPreview() {
+    }
+
+    private fun getHashInput(callback: (string: String) -> Unit) {
+        inputDialog(
+            dismissOnPositive = false,
+            message = "Pin hash",
+            callback = { a, b, c ->
+                if (b) {
+                    val input = c?.editText?.text!!.toString()
+                    if (viewModel.isValidHash(input)) {
+                        callback(input)
+                    } else {
+                        c.error = "invalid hash"
+                    }
+                }
+            }
+        )
     }
 
     override fun getLocale(context: Context): String? {
