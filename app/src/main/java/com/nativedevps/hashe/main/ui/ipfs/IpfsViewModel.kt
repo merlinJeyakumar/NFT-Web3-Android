@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.data.repositories.local.configuration.DataStoreRepository
 import com.domain.model.configuration.nft
 import com.nativedevps.support.base_class.BaseViewModel
+import com.nativedevps.support.utility.device.network.downloadFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import org.json.JSONObject
@@ -141,6 +142,24 @@ class IpfsViewModel @Inject constructor(application: Application) : BaseViewMode
         runOnNewThread {
             val list = dataStoreRepository.getAllNft().first().nftsList
             runOnUiThread { callback.invoke(list) }
+        }
+    }
+
+    fun downloadNftFile(hash: String) {
+        runOnNewThread {
+            context.downloadFile(
+                "https://gateway.pinata.cloud/ipfs/$hash",
+                callbackProgress = { progress: Int ->
+                    showProgressDialog("$progress%")
+                },
+                callbackStatusUpdate = { boolean, file, error ->
+                    hideProgressDialog()
+                    if (boolean) {
+                        overrideConsole("file downloaded: ${file?.path}")
+                    } else {
+                        overrideConsole("error: $error")
+                    }
+                })
         }
     }
 

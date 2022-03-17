@@ -77,13 +77,13 @@ class IpfsActivity : ActionBarActivity<ActivityIpfsBinding, IpfsViewModel>(
             }
         }
         childBinding.mainInclude.showHashMaterialButton.setOnClickListener {
-            viewModel.getNftList {
-                alertDialog =
-                    listDialog(stringList = it.map { it.hash }, callback = { isSuccess, pair ->
-                        if (isSuccess) {
-                            viewModel.overrideConsole("Selected: ${pair?.second}")
-                        }
-                    })
+            showNftHash {
+                viewModel.overrideConsole("Selected: $it")
+            }
+        }
+        childBinding.mainInclude.downloadFileMaterialButton.setOnClickListener {
+            showNftHash {
+                viewModel.downloadNftFile(it)
             }
         }
     }
@@ -117,6 +117,17 @@ class IpfsActivity : ActionBarActivity<ActivityIpfsBinding, IpfsViewModel>(
             }.apply {
                 pickFileRequest.launch(this)
             }
+        }
+    }
+
+    private fun showNftHash(callback: (string: String) -> Unit) {
+        viewModel.getNftList {
+            alertDialog =
+                listDialog(stringList = it.map { it.hash }, callback = { isSuccess, pair ->
+                    if (isSuccess) {
+                        callback.invoke(pair?.second!!)
+                    }
+                })
         }
     }
 
