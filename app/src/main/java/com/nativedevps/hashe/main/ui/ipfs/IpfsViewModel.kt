@@ -8,6 +8,8 @@ import com.data.repositories.local.configuration.DataStoreRepository
 import com.domain.model.configuration.nft
 import com.nativedevps.support.base_class.BaseViewModel
 import com.nativedevps.support.utility.device.network.downloadFile
+import com.nativedevps.support.utility.file.getFileExtensionMime
+import com.nativedevps.support.utility.file.getFileMime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import org.json.JSONObject
@@ -16,6 +18,7 @@ import util.IsIpfs
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
+
 
 @HiltViewModel
 class IpfsViewModel @Inject constructor(application: Application) : BaseViewModel(application) {
@@ -146,6 +149,7 @@ class IpfsViewModel @Inject constructor(application: Application) : BaseViewMode
     }
 
     fun downloadNftFile(hash: String) {
+        showProgressDialog()
         runOnNewThread {
             context.downloadFile(
                 "https://gateway.pinata.cloud/ipfs/$hash",
@@ -155,7 +159,13 @@ class IpfsViewModel @Inject constructor(application: Application) : BaseViewMode
                 callbackStatusUpdate = { boolean, file, error ->
                     hideProgressDialog()
                     if (boolean) {
-                        overrideConsole("file downloaded: ${file?.path}")
+                        file?.renameTo(
+                            File(
+                                file.parentFile,
+                                "${hash}.${getFileExtensionMime(getFileMime(file)!!)}"
+                            )
+                        )
+                        overrideConsole("file downloaded : ${file?.absolutePath}.${file?.extension}")
                     } else {
                         overrideConsole("error: $error")
                     }
