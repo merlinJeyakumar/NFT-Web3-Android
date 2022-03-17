@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.data.repositories.local.configuration.DataStoreRepository
 import com.domain.model.configuration.nft
 import com.nativedevps.support.base_class.BaseViewModel
+import com.nativedevps.support.utility.date_time_utility.MillisecondUtility
 import com.nativedevps.support.utility.device.network.downloadFile
 import com.nativedevps.support.utility.file.getFileExtensionMime
 import com.nativedevps.support.utility.file.getFileMime
@@ -152,7 +153,9 @@ class IpfsViewModel @Inject constructor(application: Application) : BaseViewMode
         showProgressDialog()
         runOnNewThread {
             context.downloadFile(
-                "https://gateway.pinata.cloud/ipfs/$hash",
+                "https://gateway.pinata.cloud/ipfs/$hash", destFile = File(
+                    context.externalCacheDir!!, "file_${MillisecondUtility.now}"
+                ),
                 callbackProgress = { progress: Int ->
                     showProgressDialog("$progress%")
                 },
