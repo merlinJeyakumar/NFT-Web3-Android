@@ -1,6 +1,6 @@
 ## Ethereum and NFT Wallet
 
-### What is Etherirum?
+### What is Ethereum?
 ` it's designed to be scalable, programmable, secure, and decentralized—to create any secured digital technology. Its token is designed to pay for work done supporting the blockchain, but participants can also use it to pay for tangible goods and services if accepted. `
 
 ### What is NFT?
